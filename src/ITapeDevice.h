@@ -10,4 +10,4 @@ public:
     virtual ~ITapeDevice() = default;
 };
 
-#endif ITAPEDEVICE_H
+#endif // ITAPEDEVICE_H
