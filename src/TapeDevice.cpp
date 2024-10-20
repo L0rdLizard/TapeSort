@@ -45,7 +45,7 @@ public:
     TapeDevice(const std::string& filename) : currentPos(0) {
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
         if (!file) {
-            throw std::runtime_error("File not exists. To create a new file - specify length");
+            throw std::runtime_error("Tape file not exists. To create a new file - specify length");
         }
 
         file.seekg(0, std::ios::end);
