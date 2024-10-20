@@ -17,22 +17,25 @@ public:
         bool fileExists = std::filesystem::exists(filename);
 
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::ate);
-
         if (!file) {
-            throw std::runtime_error("Failed to open or create tape file");
-        }
+            file.open(filename, std::ios::out | std::ios::binary);
+            if (!file) {
+                throw std::runtime_error("Failed to create tape file");
+            }
 
-        if (!fileExists) {
             int zero = 0;
             for (size_t i = 0; i < length; ++i) {
                 file.write(reinterpret_cast<const char*>(&zero), sizeof(int));
             }
             file.flush();
-        } else {
-            size_t fileSize = file.tellg();
-            if (fileSize != length * sizeof(int)) {
-                throw std::runtime_error("File size does not match the expected tape length");
-            }
+        }
+
+        file.close();
+        file.open(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::ate);
+
+        size_t fileSize = file.tellg();
+        if (fileSize != length * sizeof(int)) {
+            throw std::runtime_error("File size does not match the expected tape length");
         }
 
         file.seekg(0, std::ios::beg);
