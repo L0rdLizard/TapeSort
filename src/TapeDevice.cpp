@@ -59,7 +59,7 @@ public:
         }
 
         length = fileSize / sizeof(int);
-        std::cout << "File length is: " << length;
+        std::cout << "File length is: " << length << std::endl;
         file.seekg(0, std::ios::beg);
     }
 
