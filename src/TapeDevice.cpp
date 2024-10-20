@@ -1,64 +1,83 @@
 #include "ITapeDevice.h"
+#include <fstream>
 #include <stdexcept>
-
-struct Node {
-    int data;
-    Node* prev;
-    Node* next;
-
-    Node(int value) : data(value), prev(nullptr), next(nullptr) {}
-};
+#include <vector>
+#include <filesystem>
 
 class TapeDevice : public ITapeDevice {
 private:
-    Node* head;
-    Node* current;
+    std::fstream file;
+    size_t length;
+    size_t currentPos;
+
 public:
-    TapeDevice(size_t length) : head(nullptr), current(nullptr) {
-        if (length == 0) {
-            throw std::invalid_argument("Length of the tape must be greater than 0");
+    TapeDevice(const std::string& filename, size_t length) 
+        : length(length), currentPos(0) {
+
+        bool fileExists = std::filesystem::exists(filename);
+
+        file.open(filename, std::ios::in | std::ios::out | std::ios::binary | std::ios::ate);
+
+        if (!file) {
+            throw std::runtime_error("Failed to open or create tape file");
         }
 
-        head = new Node(0);
-        current = head;
-        Node* prevNode = head;
-
-        for (size_t i = 1; i < length; ++i) {
-            Node* newNode = new Node(0);
-            prevNode->next = newNode;
-            newNode->prev = prevNode;
-            prevNode = newNode;
+        if (!fileExists) {
+            int zero = 0;
+            for (size_t i = 0; i < length; ++i) {
+                file.write(reinterpret_cast<const char*>(&zero), sizeof(int));
+            }
+            file.flush();
+        } else {
+            size_t fileSize = file.tellg();
+            if (fileSize != length * sizeof(int)) {
+                throw std::runtime_error("File size does not match the expected tape length");
+            }
         }
+
+        file.seekg(0, std::ios::beg);
     }
 
     ~TapeDevice() {
-        Node* node = head;
-        while (node != nullptr) {
-            Node* nextNode = node->next;
-            delete node;
-            node = nextNode;
+        if (file.is_open()) {
+            file.close();
         }
     }
 
     int getCurrentCell() override {
-        return current->data;
+        int value;
+        file.seekg(currentPos * sizeof(int), std::ios::beg);
+        file.read(reinterpret_cast<char*>(&value), sizeof(int));
+
+        if (!file) {
+            throw std::runtime_error("Failed to read from tape");
+        }
+
+        return value;
     }
 
     void changeCurrentCell(int value) override {
-        current->data = value;
+        file.seekp(currentPos * sizeof(int), std::ios::beg);
+        file.write(reinterpret_cast<const char*>(&value), sizeof(int));
+
+        if (!file) {
+            throw std::runtime_error("Failed to write to tape");
+        }
+
+        file.flush();
     }
 
     void moveToNextCell() override {
-        if (current->next == nullptr){
+        if (currentPos + 1 >= length) {
             throw std::out_of_range("End of tape reached");
         }
-        current = current->next;
+        ++currentPos;
     }
 
     void moveToPreviousCell() override {
-        if (current->prev == nullptr){
+        if (currentPos == 0) {
             throw std::out_of_range("Beginning of tape reached");
         }
-        current = current->prev;
+        --currentPos;
     }
 };
