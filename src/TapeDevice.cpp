@@ -5,15 +5,19 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <unordered_map>
+#include <chrono>
 
 class TapeDevice : public ITapeDevice {
 private:
     std::fstream file;
     size_t length;
     size_t currentPos;
+    std::unordered_map<std::string, int> delays;
 
 public:
     TapeDevice(const std::string& filename, size_t length) : length(length), currentPos(0) {
+        readConfig();
         std::string path = "../data/" + filename;
         file.open(path, std::ios::in | std::ios::out | std::ios::binary);
         if (!file) {
@@ -45,6 +49,7 @@ public:
     }
 
     TapeDevice(const std::string& filename) : currentPos(0) {
+        readConfig();
         std::string path = "../data/" + filename;
         file.open(path, std::ios::in | std::ios::out | std::ios::binary);
         if (!file) {
@@ -66,6 +71,29 @@ public:
         file.seekg(0, std::ios::beg);
     }
 
+    void readConfig() {
+        std::ifstream file("../config/delays.cfg");
+
+        if (!file) {
+            std::cerr << "Failed to open configuration file" << std::endl;
+            exit(1);
+        }
+
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.empty() || line[0] == '#') continue;
+
+            size_t delimiterPos = line.find('=');
+            if (delimiterPos == std::string::npos) continue;
+
+            std::string key = line.substr(0, delimiterPos);
+            int value = std::stoi(line.substr(delimiterPos + 1));
+
+            std::cout << key << ": " << value << std::endl;
+            delays[key] = value;
+        }
+        std::cout << std::endl;
+    }
 
     ~TapeDevice() {
         if (file.is_open()) {
