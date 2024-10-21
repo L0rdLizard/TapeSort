@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <chrono>
+#include <thread>
 
 class TapeDevice : public ITapeDevice {
 private:
@@ -86,13 +87,17 @@ public:
             size_t delimiterPos = line.find('=');
             if (delimiterPos == std::string::npos) continue;
 
-            std::string key = line.substr(0, delimiterPos);
+            std::string key = line.substr(0, delimiterPos - 1);
             int value = std::stoi(line.substr(delimiterPos + 1));
 
             std::cout << key << ": " << value << std::endl;
             delays[key] = value;
         }
         std::cout << std::endl;
+    }
+
+    void simulateDelay(int delayMs) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
     }
 
     ~TapeDevice() {
