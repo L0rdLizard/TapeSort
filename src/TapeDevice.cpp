@@ -4,6 +4,7 @@
 #include <vector>
 #include <filesystem>
 #include <iostream>
+#include <string>
 
 class TapeDevice : public ITapeDevice {
 private:
@@ -13,9 +14,10 @@ private:
 
 public:
     TapeDevice(const std::string& filename, size_t length) : length(length), currentPos(0) {
-        file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
+        std::string path = "../data/" + filename;
+        file.open(path, std::ios::in | std::ios::out | std::ios::binary);
         if (!file) {
-            file.open(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+            file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
             if (!file) {
                 throw std::runtime_error("Failed to create tape file");
             }
@@ -27,7 +29,7 @@ public:
             file.flush();
 
             file.close();
-            file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
+            file.open(path, std::ios::in | std::ios::out | std::ios::binary);
             if (!file) {
                 throw std::runtime_error("Failed to reopen tape file");
             }
@@ -43,7 +45,8 @@ public:
     }
 
     TapeDevice(const std::string& filename) : currentPos(0) {
-        file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
+        std::string path = "../data/" + filename;
+        file.open(path, std::ios::in | std::ios::out | std::ios::binary);
         if (!file) {
             throw std::runtime_error("Tape file not exists. To create a new file - specify length");
         }
