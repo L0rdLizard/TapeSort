@@ -1,4 +1,4 @@
-#include "TapeDevice.cpp"
+#include "TapeDevice.h"
 #include <iostream>
 
 void test1() {

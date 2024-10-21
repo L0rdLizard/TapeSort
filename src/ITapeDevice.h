@@ -1,5 +1,5 @@
-#ifndef ITAPEDEVICE_H
-#define ITAPEDEVICE_H
+#ifndef I_TAPE_DEVICE_H
+#define I_TAPE_DEVICE_H
 
 class ITapeDevice {
 public:

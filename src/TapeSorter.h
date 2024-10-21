@@ -1,7 +1,7 @@
 #ifndef TAPESORTER_H
 #define TAPESORTER_H
 
-#include "TapeDevice.cpp"
+#include "TapeDevice.h"
 
 class TapeSorter {
 public:

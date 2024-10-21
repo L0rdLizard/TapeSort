@@ -1,4 +1,5 @@
 #include <TapeSorter.h>
+#include <iostream>
 
 TapeSorter::TapeSorter() {
 
