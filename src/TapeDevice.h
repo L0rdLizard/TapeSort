@@ -23,6 +23,10 @@ public:
 
     int getCurrentCell() override;
 
+    size_t getCurrentPosition() override;
+
+    size_t getLength() override;
+
     void changeCurrentCell(int value) override;
 
     void moveToNextCell() override;

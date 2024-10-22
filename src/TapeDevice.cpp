@@ -107,6 +107,14 @@ int TapeDevice::getCurrentCell() {
     return value;
 }
 
+size_t TapeDevice::getCurrentPosition() {
+    return currentPos;
+}
+
+size_t TapeDevice::getLength() {
+    return length;
+}
+
 void TapeDevice::changeCurrentCell(int value) {
     file.seekp(currentPos * sizeof(int), std::ios::beg);
     file.write(reinterpret_cast<const char*>(&value), sizeof(int));
