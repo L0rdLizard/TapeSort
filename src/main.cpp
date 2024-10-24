@@ -3,7 +3,7 @@
 
 void test1() {
     try {
-        TapeDevice tape("tape.bin", 10);
+        TapeDevice tape("tape.bin", 10, "delays.cfg");
 
         tape.changeCurrentCell(42);
         tape.moveToNextCell();
@@ -20,7 +20,7 @@ void test1() {
 
 void test2() {
     try {
-        TapeDevice tape("tape.bin");
+        TapeDevice tape("tape.bin", "delays.cfg");
 
         // tape.moveToNextCell();
 
@@ -33,7 +33,7 @@ void test2() {
 }
 
 int main() {
-    test2();
+    test1();
 
     return 0;
 }

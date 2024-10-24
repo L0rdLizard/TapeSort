@@ -10,7 +10,7 @@ add_executable(TapeSort
     src/main.cpp
     src/TapeDevice.cpp
     src/TapeSorter.cpp
-    # src/Config.cpp
+    src/Config.cpp
     # src/utils/FileUtils.cpp
 )
 

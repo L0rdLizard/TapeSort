@@ -1,6 +1,8 @@
 #ifndef I_TAPE_DEVICE_H
 #define I_TAPE_DEVICE_H
 
+#include <cstddef>
+
 class ITapeDevice {
 public:
     virtual int getCurrentCell() = 0;

@@ -15,9 +15,9 @@ private:
     std::unordered_map<std::string, int> delays;
 
 public:
-    TapeDevice(const std::string& filename, size_t length);
+    TapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
 
-    TapeDevice(const std::string& filename);
+    TapeDevice(const std::string& filename, const std::string& configFilename);
 
     ~TapeDevice();
 
@@ -33,7 +33,7 @@ public:
 
     void moveToPreviousCell() override;
 
-    void readConfig();
+    void readConfig(const std::string& configFilename);
 
     void simulateDelay(int delayMs);
 };

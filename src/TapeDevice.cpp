@@ -1,13 +1,14 @@
 #include "TapeDevice.h"
+#include "Config.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <vector>
 #include <filesystem>
 
-TapeDevice::TapeDevice(const std::string& filename, size_t length)
+TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
     : length(length), currentPos(0) {
-    readConfig();
+    readConfig(configFilename);
     std::string path = "../data/" + filename;
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
@@ -38,8 +39,8 @@ TapeDevice::TapeDevice(const std::string& filename, size_t length)
     file.seekg(0, std::ios::beg);
 }
 
-TapeDevice::TapeDevice(const std::string& filename) : currentPos(0) {
-    readConfig();
+TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
+    readConfig(configFilename);
     std::string path = "../data/" + filename;
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
@@ -61,28 +62,10 @@ TapeDevice::TapeDevice(const std::string& filename) : currentPos(0) {
     file.seekg(0, std::ios::beg);
 }
 
-void TapeDevice::readConfig() {
-    std::ifstream file("../config/delays.cfg");
+void TapeDevice::readConfig(const std::string& configFilename) {
+    Config config(configFilename);
 
-    if (!file) {
-        std::cerr << "Failed to open configuration file" << std::endl;
-        exit(1);
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        if (line.empty() || line[0] == '#') continue;
-
-        size_t delimiterPos = line.find('=');
-        if (delimiterPos == std::string::npos) continue;
-
-        std::string key = line.substr(0, delimiterPos - 1);
-        int value = std::stoi(line.substr(delimiterPos + 1));
-
-        std::cout << key << ": " << value << std::endl;
-        delays[key] = value;
-    }
-    std::cout << std::endl;
+    delays = config.loadConfig();
 }
 
 void TapeDevice::simulateDelay(int delayMs) {
