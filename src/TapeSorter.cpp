@@ -4,7 +4,10 @@
 #include <iostream>
 
 TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit)
-    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit) {}
+    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit) {
+        inputTape.rewind();
+        outputTape.rewind();
+    }
 
 void TapeSorter::sort() {
     size_t chunkSize = memoryLimit / sizeof(int);
@@ -12,12 +15,15 @@ void TapeSorter::sort() {
 
     std::vector<std::string> tempFiles;
 
-    while (true) {
+    while (inputTape.getCurrentPosition() < inputTape.getLength() - 1) {
         buffer.clear();
         try {
-            for (size_t i = 0; i < chunkSize && inputTape.getCurrentPosition() < inputTape.getLength(); ++i) {
+            for (size_t i = 0; i < chunkSize && inputTape.getCurrentPosition() < inputTape.getLength() - 1; ++i) {
                 buffer.push_back(inputTape.getCurrentCell());
                 inputTape.moveToNextCell();
+            }
+            if (inputTape.getCurrentPosition() == inputTape.getLength() - 1){
+                buffer.push_back(inputTape.getCurrentCell());
             }
             if (buffer.empty()) break;
 
@@ -35,6 +41,8 @@ void TapeSorter::sort() {
     for (const std::string& tempFile : tempFiles) {
         std::remove(tempFile.c_str());
     }
+    inputTape.rewind();
+    outputTape.rewind();
 }
 
 std::string TapeSorter::createTempFile(const std::vector<int>& buffer) {

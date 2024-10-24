@@ -122,3 +122,7 @@ void TapeDevice::moveToPreviousCell() {
     }
     --currentPos;
 }
+
+void TapeDevice::rewind() {
+    currentPos = 0;
+}

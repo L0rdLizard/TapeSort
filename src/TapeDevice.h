@@ -33,6 +33,8 @@ public:
 
     void moveToPreviousCell() override;
 
+    void rewind();
+
     void readConfig(const std::string& configFilename);
 
     void simulateDelay(int delayMs);
