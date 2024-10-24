@@ -39,7 +39,7 @@ void TapeSorter::sort() {
 
 std::string TapeSorter::createTempFile(const std::vector<int>& buffer) {
     static int tempFileIndex = 0;
-    std::string tempFileName = "../tmp/temp_tape_" + std::to_string(tempFileIndex++) + ".dat";
+    std::string tempFileName = "../tmp/temp_tape_" + std::to_string(tempFileIndex++) + ".bin";
 
     std::ofstream tempFile(tempFileName, std::ios::binary);
     if (!tempFile) {
