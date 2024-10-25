@@ -48,10 +48,6 @@ TapeDevice::TapeDevice(const std::string& filename, const std::string& configFil
 TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
     : currentPos(0), length(length), tapeFilename(filename) {
     
-    // length = FileUtils::convertTextToBinary(tapeFilename);
-    // if (length == 0) {
-    //     throw std::runtime_error("Txt file is empty or not exists");
-    // }
     readConfig(configFilename);
     std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
@@ -83,29 +79,6 @@ TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::st
     file.seekg(0, std::ios::beg);
 }
 
-// TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
-//     readConfig(configFilename);
-//     std::string path = "../data/" + filename + ".bin";
-//     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
-//     if (!file) {
-//         throw std::runtime_error("Tape file not exists. To create a new file - specify length");
-//     }
-
-//     file.seekg(0, std::ios::end);
-//     size_t fileSize = file.tellg();
-
-//     if (fileSize == 0) {
-//         throw std::runtime_error("Tape file is empty");
-//     }
-//     if (fileSize % sizeof(int) != 0) {
-//         throw std::runtime_error("Invalid file size: not aligned with integer size");
-//     }
-
-//     length = fileSize / sizeof(int);
-//     std::cout << "File length is: " << length << std::endl;
-//     file.seekg(0, std::ios::beg);
-// }
-
 void TapeDevice::readConfig(const std::string& configFilename) {
     Config config(configFilename);
 
@@ -124,6 +97,10 @@ TapeDevice::~TapeDevice() {
 }
 
 int TapeDevice::getCurrentCell() {
+    if (delays["read_delay"] > 0) {
+        simulateDelay(delays["read_delay"]);
+    }
+
     int value;
     file.seekg(currentPos * sizeof(int), std::ios::beg);
     file.read(reinterpret_cast<char*>(&value), sizeof(int));
@@ -144,6 +121,10 @@ size_t TapeDevice::getLength() {
 }
 
 void TapeDevice::changeCurrentCell(int value) {
+    if (delays["write_delay"] > 0) {
+        simulateDelay(delays["write_delay"]);
+    }
+    
     file.seekp(currentPos * sizeof(int), std::ios::beg);
     file.write(reinterpret_cast<const char*>(&value), sizeof(int));
 
@@ -155,6 +136,10 @@ void TapeDevice::changeCurrentCell(int value) {
 }
 
 void TapeDevice::moveToNextCell() {
+    if (delays["shift_delay"] > 0) {
+        simulateDelay(delays["shift_delay"]);
+    }
+
     if (currentPos + 1 >= length) {
         throw std::out_of_range("End of tape reached");
     }
@@ -162,6 +147,10 @@ void TapeDevice::moveToNextCell() {
 }
 
 void TapeDevice::moveToPreviousCell() {
+    if (delays["shift_delay"] > 0) {
+        simulateDelay(delays["shift_delay"]);
+    }
+
     if (currentPos == 0) {
         throw std::out_of_range("Beginning of tape reached");
     }
@@ -169,5 +158,8 @@ void TapeDevice::moveToPreviousCell() {
 }
 
 void TapeDevice::rewind() {
+    if (delays["rewind_delay"] > 0) {
+        simulateDelay(delays["rewind_delay"]);
+    }
     currentPos = 0;
 }

@@ -2,6 +2,7 @@
 #include "TapeSorter.h"
 #include <iostream>
 #include <filesystem>
+#include <chrono>
 
 void test1()
 {
@@ -68,7 +69,13 @@ void test3()
 
         size_t memorySize = 15;
         TapeSorter tapeSorter(tape1, tape2, memorySize);
+
+        auto start = std::chrono::high_resolution_clock::now();
         tapeSorter.sort();
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double> duration = end - start;
+        std::cout << "Sorting took " << duration.count() << " seconds." << std::endl;
 
         tape2.rewind();
         std::cout << tape2.getCurrentCell() << std::endl;
@@ -92,17 +99,23 @@ void test4()
 
         TapeDevice tape2("tape4", tape1.getLength(), "delays.cfg");
 
-        size_t memorySize = 15;
+        size_t memorySize = 8;
         TapeSorter tapeSorter(tape1, tape2, memorySize);
+        
+        auto start = std::chrono::high_resolution_clock::now();
         tapeSorter.sort();
+        auto end = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double> duration = end - start;
+        std::cout << "Sorting took " << duration.count() << " seconds." << std::endl;
 
         tape2.rewind();
-        std::cout << tape2.getCurrentCell() << std::endl;
-        for (int i = 1; i < tape2.getLength(); i++)
-        {
-            tape2.moveToNextCell();
-            std::cout << tape2.getCurrentCell() << std::endl;
-        }
+        // std::cout << tape2.getCurrentCell() << std::endl;
+        // for (int i = 1; i < tape2.getLength(); i++)
+        // {
+        //     tape2.moveToNextCell();
+        //     std::cout << tape2.getCurrentCell() << std::endl;
+        // }
     }
     catch (const std::exception &e)
     {

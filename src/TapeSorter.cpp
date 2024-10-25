@@ -10,7 +10,7 @@ TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t mem
     }
 
 void TapeSorter::sort() {
-    size_t chunkSize = memoryLimit / sizeof(int);
+    size_t chunkSize = memoryLimit;
     std::vector<int> buffer;
 
     while (inputTape.getCurrentPosition() < inputTape.getLength() - 1) {
