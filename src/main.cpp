@@ -7,7 +7,7 @@ void test1()
 {
     try
     {
-        TapeDevice tape("tape", 10, "delays.cfg");
+        TapeDevice tape("tape", "delays.cfg");
 
         tape.changeCurrentCell(42);
         tape.moveToNextCell();
@@ -44,7 +44,7 @@ void test3()
 {
     try
     {
-        TapeDevice tape1("tape1", 9, "delays.cfg");
+        TapeDevice tape1("tape1", "delays.cfg");
 
         tape1.changeCurrentCell(42);
         tape1.moveToNextCell();
@@ -64,7 +64,33 @@ void test3()
         tape1.moveToNextCell();
         tape1.changeCurrentCell(-3);
 
-        TapeDevice tape2("tape2", 9, "delays.cfg");
+        TapeDevice tape2("tape2", "delays.cfg");
+
+        size_t memorySize = 15;
+        TapeSorter tapeSorter(tape1, tape2, memorySize);
+        tapeSorter.sort();
+
+        tape2.rewind();
+        std::cout << tape2.getCurrentCell() << std::endl;
+        for (int i = 1; i < tape2.getLength(); i++)
+        {
+            tape2.moveToNextCell();
+            std::cout << tape2.getCurrentCell() << std::endl;
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+void test4()
+{
+    try
+    {
+        TapeDevice tape1("tape3", "delays.cfg");
+
+        TapeDevice tape2("tape4", tape1.getLength(), "delays.cfg");
 
         size_t memorySize = 15;
         TapeSorter tapeSorter(tape1, tape2, memorySize);
@@ -96,7 +122,7 @@ int main()
     } catch (const std::filesystem::filesystem_error& e) {
         
     }
-    test3();
+    test4();
 
     return 0;
 }

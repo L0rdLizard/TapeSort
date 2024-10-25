@@ -23,7 +23,7 @@ add_executable(TapeSort
     src/TempTapeDevice.cpp
     src/TapeSorter.cpp
     src/Config.cpp
-    # src/utils/FileUtils.cpp
+    src/utils/FileUtils.cpp
 )
 
 enable_testing()

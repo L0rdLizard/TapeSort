@@ -1,15 +1,21 @@
 #include "TapeDevice.h"
 #include "Config.h"
+#include "utils/FileUtils.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <vector>
 #include <filesystem>
 
-TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
-    : length(length), currentPos(0) {
+TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename)
+    : currentPos(0), tapeFilename(filename) {
+
+    length = FileUtils::convertTextToBinary(tapeFilename);
+    if (length == 0) {
+        throw std::runtime_error("Input Txt file is empty or not exists");
+    }
     readConfig(configFilename);
-    std::string path = "../data/" + filename + ".bin";
+    std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
@@ -39,28 +45,66 @@ TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::st
     file.seekg(0, std::ios::beg);
 }
 
-TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
+TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
+    : currentPos(0), length(length), tapeFilename(filename) {
+    
+    // length = FileUtils::convertTextToBinary(tapeFilename);
+    // if (length == 0) {
+    //     throw std::runtime_error("Txt file is empty or not exists");
+    // }
     readConfig(configFilename);
-    std::string path = "../data/" + filename + ".bin";
+    std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
-        throw std::runtime_error("Tape file not exists. To create a new file - specify length");
+        file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
+        if (!file) {
+            throw std::runtime_error("Failed to create tape file");
+        }
+
+        int zero = 0;
+        for (size_t i = 0; i < length; ++i) {
+            file.write(reinterpret_cast<const char*>(&zero), sizeof(int));
+        }
+        file.flush();
+
+        file.close();
+        file.open(path, std::ios::in | std::ios::out | std::ios::binary);
+        if (!file) {
+            throw std::runtime_error("Failed to reopen tape file");
+        }
     }
 
     file.seekg(0, std::ios::end);
     size_t fileSize = file.tellg();
-
-    if (fileSize == 0) {
-        throw std::runtime_error("Tape file is empty");
-    }
-    if (fileSize % sizeof(int) != 0) {
-        throw std::runtime_error("Invalid file size: not aligned with integer size");
+    if (fileSize != length * sizeof(int)) {
+        throw std::runtime_error("File size does not match the expected tape length");
     }
 
-    length = fileSize / sizeof(int);
-    std::cout << "File length is: " << length << std::endl;
     file.seekg(0, std::ios::beg);
 }
+
+// TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
+//     readConfig(configFilename);
+//     std::string path = "../data/" + filename + ".bin";
+//     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
+//     if (!file) {
+//         throw std::runtime_error("Tape file not exists. To create a new file - specify length");
+//     }
+
+//     file.seekg(0, std::ios::end);
+//     size_t fileSize = file.tellg();
+
+//     if (fileSize == 0) {
+//         throw std::runtime_error("Tape file is empty");
+//     }
+//     if (fileSize % sizeof(int) != 0) {
+//         throw std::runtime_error("Invalid file size: not aligned with integer size");
+//     }
+
+//     length = fileSize / sizeof(int);
+//     std::cout << "File length is: " << length << std::endl;
+//     file.seekg(0, std::ios::beg);
+// }
 
 void TapeDevice::readConfig(const std::string& configFilename) {
     Config config(configFilename);
@@ -76,6 +120,7 @@ TapeDevice::~TapeDevice() {
     if (file.is_open()) {
         file.close();
     }
+    FileUtils::convertBinaryToText(tapeFilename);
 }
 
 int TapeDevice::getCurrentCell() {

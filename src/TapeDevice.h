@@ -13,6 +13,7 @@ private:
     size_t length;
     size_t currentPos;
     std::unordered_map<std::string, int> delays;
+    std::string tapeFilename;
 
 public:
     TapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
