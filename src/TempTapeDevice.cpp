@@ -76,7 +76,7 @@ TempTapeDevice::~TempTapeDevice() {
     if (file.is_open()) {
         file.close();
     }
-    std::string path = "../tmp/" + tempFilename;
+    std::string path = "../tmp/" + tempFilename + ".bin";
     std::remove(path.c_str());
 }
 

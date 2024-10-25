@@ -1,6 +1,7 @@
 #include "TapeDevice.h"
 #include "TapeSorter.h"
 #include <iostream>
+#include <filesystem>
 
 void test1()
 {
@@ -84,7 +85,17 @@ void test3()
 }
 
 int main()
-{
+{   
+    std::string path = "../tmp/";
+    try {
+        if (std::filesystem::create_directory(path)) {
+            std::cout << "Папка 'tmp' успешно создана." << std::endl;
+        } else {
+            
+        }
+    } catch (const std::filesystem::filesystem_error& e) {
+        
+    }
     test3();
 
     return 0;

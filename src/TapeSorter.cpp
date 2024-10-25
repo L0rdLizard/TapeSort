@@ -41,7 +41,7 @@ void TapeSorter::sort() {
 
 void TapeSorter::createTempTape(const std::vector<int>& buffer) {
     static int tempTapeIndex = 0;
-    std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++) + ".bin";
+    std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++);
 
     auto tempTape = std::make_unique<TempTapeDevice>(tempTapeName, buffer.size(), "delays.cfg");
     tempTape->rewind();
