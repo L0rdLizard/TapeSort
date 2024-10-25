@@ -1,5 +1,5 @@
-#ifndef TAPE_DEVICE_H
-#define TAPE_DEVICE_H
+#ifndef TEMP_TAPE_DEVICE_H
+#define TEMP_TAPE_DEVICE_H
 
 #include "ITapeDevice.h"
 #include <fstream>
@@ -7,19 +7,20 @@
 #include <unordered_map>
 #include <string>
 
-class TapeDevice : public ITapeDevice {
+class TempTapeDevice : public ITapeDevice {
 private:
     std::fstream file;
     size_t length;
     size_t currentPos;
     std::unordered_map<std::string, int> delays;
+    std::string tempFilename;
 
 public:
-    TapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
+    TempTapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
 
-    TapeDevice(const std::string& filename, const std::string& configFilename);
+    TempTapeDevice(const std::string& filename, const std::string& configFilename);
 
-    ~TapeDevice();
+    ~TempTapeDevice();
 
     int getCurrentCell() override;
 
@@ -40,4 +41,4 @@ public:
     void simulateDelay(int delayMs) override;
 };
 
-#endif // TAPE_DEVICE_H
+#endif // TEMP_TAPE_DEVICE_H

@@ -2,6 +2,7 @@
 #define TAPESORTER_H
 
 #include "TapeDevice.h"
+#include "TempTapeDevice.h"
 #include <vector>
 #include <string>
 #include <queue>
@@ -16,7 +17,7 @@ private:
     TapeDevice& inputTape;
     TapeDevice& outputTape;
     size_t memoryLimit;
-    std::vector<std::unique_ptr<TapeDevice>> tempTapes;
+    std::vector<std::unique_ptr<TempTapeDevice>> tempTapes;
 
     // std::string createTempFile(const std::vector<int>& buffer);
     void createTempTape(const std::vector<int>& buffer);

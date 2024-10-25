@@ -27,8 +27,6 @@ void TapeSorter::sort() {
 
             std::sort(buffer.begin(), buffer.end());
 
-            // std::string tempFileName = createTempFile(buffer);
-            // tempFiles.push_back(tempFileName);
             createTempTape(buffer); 
         }
         catch (const std::out_of_range&) {
@@ -45,7 +43,7 @@ void TapeSorter::createTempTape(const std::vector<int>& buffer) {
     static int tempTapeIndex = 0;
     std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++) + ".bin";
 
-    auto tempTape = std::make_unique<TapeDevice>(tempTapeName, buffer.size(), "delays.cfg");
+    auto tempTape = std::make_unique<TempTapeDevice>(tempTapeName, buffer.size(), "delays.cfg");
     tempTape->rewind();
 
     for (int value : buffer) {

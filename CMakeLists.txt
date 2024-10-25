@@ -20,6 +20,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 add_executable(TapeSort
     src/main.cpp
     src/TapeDevice.cpp
+    src/TempTapeDevice.cpp
     src/TapeSorter.cpp
     src/Config.cpp
     # src/utils/FileUtils.cpp
