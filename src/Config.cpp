@@ -33,13 +33,13 @@ std::unordered_map<std::string, int> Config::loadConfig() {
         try {
             int value = std::stoi(valueStr);
             delays[key] = value;
-            std::cout << key << ": " << value << std::endl;
+            // std::cout << key << ": " << value << std::endl;
         } catch (const std::invalid_argument& e) {
             std::cerr << "Invalid value for key '" << key << "': " << valueStr << std::endl;
             continue;
         }
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
 
     if (delays.empty()) {
         throw std::runtime_error("No valid configuration entries found in file: " + path);
