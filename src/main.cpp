@@ -99,7 +99,7 @@ void test4()
 
         TapeDevice tape2("tape4", tape1.getLength(), "delays.cfg");
 
-        size_t memorySize = 8;
+        size_t memorySize = 2;
         TapeSorter tapeSorter(tape1, tape2, memorySize);
         
         auto start = std::chrono::high_resolution_clock::now();

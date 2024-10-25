@@ -86,6 +86,7 @@ void TapeDevice::readConfig(const std::string& configFilename) {
 }
 
 void TapeDevice::simulateDelay(int delayMs) {
+    // std::cout << "SSSimulating delay of " << delayMs << " ms" << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
 }
 
@@ -158,6 +159,9 @@ void TapeDevice::moveToPreviousCell() {
 }
 
 void TapeDevice::rewind() {
+    if (currentPos == 0) {
+        return;
+    }
     if (delays["rewind_delay"] > 0) {
         simulateDelay(delays["rewind_delay"]);
     }

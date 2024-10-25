@@ -30,12 +30,6 @@ TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, const
         }
     }
 
-    file.seekg(0, std::ios::end);
-    size_t fileSize = file.tellg();
-    if (fileSize != length * sizeof(int)) {
-        throw std::runtime_error("File size does not match the expected tape length");
-    }
-
     file.seekg(0, std::ios::beg);
 }
 
@@ -69,6 +63,7 @@ void TempTapeDevice::readConfig(const std::string& configFilename) {
 }
 
 void TempTapeDevice::simulateDelay(int delayMs) {
+    // std::cout << "Simulating delay of " << delayMs << " ms" << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
 }
 
