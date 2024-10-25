@@ -9,7 +9,7 @@
 TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
     : length(length), currentPos(0), tempFilename(filename) {
     readConfig(configFilename);
-    std::string path = "../tmp/" + filename;
+    std::string path = "../tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
@@ -41,7 +41,7 @@ TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, const
 
 TempTapeDevice::TempTapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
     readConfig(configFilename);
-    std::string path = "../tmp/" + filename;
+    std::string path = "../tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         throw std::runtime_error("Tape file not exists. To create a new file - specify length");

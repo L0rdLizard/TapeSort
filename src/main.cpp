@@ -6,7 +6,7 @@ void test1()
 {
     try
     {
-        TapeDevice tape("tape.bin", 10, "delays.cfg");
+        TapeDevice tape("tape", 10, "delays.cfg");
 
         tape.changeCurrentCell(42);
         tape.moveToNextCell();
@@ -26,7 +26,7 @@ void test2()
 {
     try
     {
-        TapeDevice tape("tape.bin", "delays.cfg");
+        TapeDevice tape("tape", "delays.cfg");
 
         // tape.moveToNextCell();
 
@@ -43,7 +43,7 @@ void test3()
 {
     try
     {
-        TapeDevice tape1("tape1.bin", 9, "delays.cfg");
+        TapeDevice tape1("tape1", 9, "delays.cfg");
 
         tape1.changeCurrentCell(42);
         tape1.moveToNextCell();
@@ -63,7 +63,7 @@ void test3()
         tape1.moveToNextCell();
         tape1.changeCurrentCell(-3);
 
-        TapeDevice tape2("tape2.bin", 9, "delays.cfg");
+        TapeDevice tape2("tape2", 9, "delays.cfg");
 
         size_t memorySize = 15;
         TapeSorter tapeSorter(tape1, tape2, memorySize);
