@@ -13,8 +13,6 @@ void TapeSorter::sort() {
     size_t chunkSize = memoryLimit / sizeof(int);
     std::vector<int> buffer;
 
-    std::vector<std::string> tempFiles;
-
     while (inputTape.getCurrentPosition() < inputTape.getLength() - 1) {
         buffer.clear();
         try {
@@ -29,51 +27,41 @@ void TapeSorter::sort() {
 
             std::sort(buffer.begin(), buffer.end());
 
-            std::string tempFileName = createTempFile(buffer);
-            tempFiles.push_back(tempFileName);
+            // std::string tempFileName = createTempFile(buffer);
+            // tempFiles.push_back(tempFileName);
+            createTempTape(buffer); 
         }
         catch (const std::out_of_range&) {
             break;
         }
     }
-    mergeTempFiles(tempFiles);
+    mergeTempTapes();
 
-    for (const std::string& tempFile : tempFiles) {
-        std::remove(tempFile.c_str());
-    }
     inputTape.rewind();
     outputTape.rewind();
 }
 
-std::string TapeSorter::createTempFile(const std::vector<int>& buffer) {
-    static int tempFileIndex = 0;
-    std::string tempFileName = "../tmp/temp_tape_" + std::to_string(tempFileIndex++) + ".bin";
+void TapeSorter::createTempTape(const std::vector<int>& buffer) {
+    static int tempTapeIndex = 0;
+    std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++) + ".bin";
 
-    std::ofstream tempFile(tempFileName, std::ios::binary);
-    if (!tempFile) {
-        throw std::runtime_error("Failed to create temporary file");
-    }
+    auto tempTape = std::make_unique<TapeDevice>(tempTapeName, buffer.size(), "delays.cfg");
+    tempTape->rewind();
 
     for (int value : buffer) {
-        tempFile.write(reinterpret_cast<const char*>(&value), sizeof(int));
-    }
-
-    tempFile.close();
-    return tempFileName;
-}
-
-void TapeSorter::mergeTempFiles(const std::vector<std::string>& tempFiles) {
-    std::vector<std::ifstream> tempStreams(tempFiles.size());
-    for (size_t i = 0; i < tempFiles.size(); ++i) {
-        tempStreams[i].open(tempFiles[i], std::ios::binary);
-        if (!tempStreams[i]) {
-            throw std::runtime_error("Failed to open temporary file: " + tempFiles[i]);
+        tempTape->changeCurrentCell(value);
+        if (tempTape->getCurrentPosition() < tempTape->getLength() - 1) {
+            tempTape->moveToNextCell();
         }
     }
+    tempTape->rewind();
+    tempTapes.push_back(std::move(tempTape));
+}
 
+void TapeSorter::mergeTempTapes() {
     struct TapeElement {
         int value;
-        size_t fileIndex;
+        size_t tapeIndex;
         bool operator>(const TapeElement& other) const {
             return value > other.value;
         }
@@ -81,12 +69,9 @@ void TapeSorter::mergeTempFiles(const std::vector<std::string>& tempFiles) {
 
     std::priority_queue<TapeElement, std::vector<TapeElement>, std::greater<TapeElement>> minHeap;
 
-    for (size_t i = 0; i < tempFiles.size(); ++i) {
-        int value;
-        tempStreams[i].read(reinterpret_cast<char*>(&value), sizeof(int));
-        if (tempStreams[i]) {
-            minHeap.push({ value, i });
-        }
+    for (size_t i = 0; i < tempTapes.size(); ++i) {
+        int value = tempTapes[i]->getCurrentCell();
+        minHeap.push({ value, i });
     }
 
     while (!minHeap.empty()) {
@@ -98,14 +83,12 @@ void TapeSorter::mergeTempFiles(const std::vector<std::string>& tempFiles) {
             outputTape.moveToNextCell();
         }
 
-        int value;
-        tempStreams[smallest.fileIndex].read(reinterpret_cast<char*>(&value), sizeof(int));
-        if (tempStreams[smallest.fileIndex]) {
-            minHeap.push({ value, smallest.fileIndex });
+        if (tempTapes[smallest.tapeIndex]->getCurrentPosition() < tempTapes[smallest.tapeIndex]->getLength() - 1) {
+            tempTapes[smallest.tapeIndex]->moveToNextCell();
+            int nextValue = tempTapes[smallest.tapeIndex]->getCurrentCell();
+            minHeap.push({ nextValue, smallest.tapeIndex });
         }
     }
 
-    for (auto& tempStream : tempStreams) {
-        tempStream.close();
-    }
+    outputTape.rewind();
 }
