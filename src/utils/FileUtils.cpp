@@ -11,7 +11,10 @@ size_t FileUtils::convertTextToBinary(const std::string& filename) {
         return 0;
     }
 
-    std::ofstream binFile("../data/" + filename + ".bin", std::ios::binary);
+    std::string binFilePath = "../data/" + filename + ".bin";
+    std::ofstream binFile;
+
+    binFile.open(binFilePath, std::ios::binary | std::ios::trunc);
     
     if (!textFile.is_open() || !binFile.is_open()) {
         throw std::runtime_error("Failed to open files");

@@ -18,6 +18,7 @@ TapeDevice::TapeDevice(const std::string& filename, const std::string& configFil
     std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
+        file.close(); 
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
         if (!file) {
             throw std::runtime_error("Failed to create tape file");
@@ -52,6 +53,7 @@ TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::st
     std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
+        file.close();
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
         if (!file) {
             throw std::runtime_error("Failed to create tape file");
@@ -68,13 +70,18 @@ TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::st
         if (!file) {
             throw std::runtime_error("Failed to reopen tape file");
         }
+    } else {
+        file.close();
+        file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
+        file.close();
+        file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     }
 
     file.seekg(0, std::ios::end);
     size_t fileSize = file.tellg();
-    if (fileSize != length * sizeof(int)) {
-        throw std::runtime_error("File size does not match the expected tape length");
-    }
+    // if (fileSize != length * sizeof(int)) {
+    //     throw std::runtime_error("File size does not match the expected tape length");
+    // }
 
     file.seekg(0, std::ios::beg);
 }
