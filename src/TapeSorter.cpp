@@ -4,8 +4,9 @@
 #include <iostream>
 #include <chrono>
 
-TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit, TimeManager& timeManager)
-    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit), timeManager(timeManager) {
+TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit,
+    TimeManager& timeManager, std::unordered_map<std::string, int> delays)
+    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit), timeManager(timeManager), delays(delays) {
         inputTape.rewind();
         outputTape.rewind();
     }
@@ -47,7 +48,7 @@ void TapeSorter::createTempTape(const std::vector<int>& buffer) {
     static int tempTapeIndex = 0;
     std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++);
 
-    auto tempTape = std::make_unique<TempTapeDevice>(tempTapeName, buffer.size(), "delays.cfg");
+    auto tempTape = std::make_unique<TempTapeDevice>(tempTapeName, buffer.size(), delays);
     tempTape->rewind();
 
     for (int value : buffer) {

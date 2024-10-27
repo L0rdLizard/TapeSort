@@ -7,14 +7,14 @@
 #include <vector>
 #include <filesystem>
 
-TapeDevice::TapeDevice(const std::string& filename, const std::string& configFilename)
-    : currentPos(0), tapeFilename(filename) {
+TapeDevice::TapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays)
+    : currentPos(0), tapeFilename(filename), delays(delays) {
 
     length = FileUtils::convertTextToBinary(tapeFilename);
     if (length == 0) {
         throw std::runtime_error("Input Txt file is empty or not exists");
     }
-    readConfig(configFilename);
+
     std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
@@ -46,10 +46,9 @@ TapeDevice::TapeDevice(const std::string& filename, const std::string& configFil
     file.seekg(0, std::ios::beg);
 }
 
-TapeDevice::TapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
-    : currentPos(0), length(length), tapeFilename(filename) {
+TapeDevice::TapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays)
+    : currentPos(0), length(length), tapeFilename(filename), delays(delays) {
     
-    readConfig(configFilename);
     std::string path = "../data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {

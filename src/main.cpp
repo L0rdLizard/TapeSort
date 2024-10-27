@@ -4,6 +4,7 @@
 #include <iostream>
 #include <filesystem>
 #include <chrono>
+#include "Config.h"
 
 // void test1()
 // {
@@ -43,13 +44,18 @@ void testTime()
     try
     {
         TimeManager timeManager(false);
-        TapeDevice tape1("tape3", "delays.cfg");
+        
+        std::string configFilename = "../config/delays.cfg";
+        Config config(configFilename);
+        std::unordered_map<std::string, int> delays = config.loadConfig();
 
-        TapeDevice tape2("tape4", tape1.getLength(), "delays.cfg");
+        TapeDevice tape1("tape3", delays);
+
+        TapeDevice tape2("tape4", tape1.getLength(), delays);
 
         size_t memorySize = 2;
 
-        TapeSorter tapeSorter(tape1, tape2, memorySize, timeManager);
+        TapeSorter tapeSorter(tape1, tape2, memorySize, timeManager, delays);
 
         auto start = std::chrono::high_resolution_clock::now();
         tapeSorter.sort();

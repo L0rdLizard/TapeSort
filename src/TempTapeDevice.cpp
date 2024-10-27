@@ -6,9 +6,9 @@
 #include <vector>
 #include <filesystem>
 
-TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, const std::string& configFilename)
-    : length(length), currentPos(0), tempFilename(filename) {
-    readConfig(configFilename);
+TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays)
+    : length(length), currentPos(0), tempFilename(filename), delays(delays) {
+    
     std::string path = "../tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
@@ -33,8 +33,9 @@ TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, const
     file.seekg(0, std::ios::beg);
 }
 
-TempTapeDevice::TempTapeDevice(const std::string& filename, const std::string& configFilename) : currentPos(0) {
-    readConfig(configFilename);
+TempTapeDevice::TempTapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays)
+    : currentPos(0), tempFilename(filename), delays(delays) {
+
     std::string path = "../tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {

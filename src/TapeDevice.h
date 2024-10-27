@@ -23,9 +23,9 @@ private:
     void moveToPreviousCell_impl();
     void rewind_impl();
 public:
-    TapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
+    TapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays);
 
-    TapeDevice(const std::string& filename, const std::string& configFilename);
+    TapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays);
 
     ~TapeDevice();
 

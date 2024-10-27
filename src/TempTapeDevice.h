@@ -23,9 +23,9 @@ private:
     void moveToPreviousCell_impl();
     void rewind_impl();
 public:
-    TempTapeDevice(const std::string& filename, size_t length, const std::string& configFilename);
+    TempTapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays);
 
-    TempTapeDevice(const std::string& filename, const std::string& configFilename);
+    TempTapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays);
 
     ~TempTapeDevice();
 

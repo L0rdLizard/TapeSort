@@ -12,7 +12,9 @@
 
 class TapeSorter {
 public:
-    TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit, TimeManager& timeManager);
+    TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit, 
+    TimeManager& timeManager, std::unordered_map<std::string, int> delays);
+
     void sort();
 private:
     TapeDevice& inputTape;
@@ -20,6 +22,7 @@ private:
     size_t memoryLimit;
     std::vector<std::unique_ptr<TempTapeDevice>> tempTapes;
     TimeManager& timeManager;
+    std::unordered_map<std::string, int> delays;
 
     void createTempTape(const std::vector<int>& buffer);
     void mergeTempTapes();
