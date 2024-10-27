@@ -9,16 +9,16 @@ Config::Config(const std::string& configFilePath) : configFilePath(configFilePat
 
 std::unordered_map<std::string, int> Config::loadConfig() {
     std::string path = "../config/" + configFilePath;
-    std::ifstream file(path);
+    std::ifstream configFile(path);
 
-    if (!file) {
+    if (!configFile) {
         throw std::runtime_error("Failed to open configuration file: " + path);
     }
 
     std::unordered_map<std::string, int> delays;
     std::string line;
 
-    while (std::getline(file, line)) {
+    while (std::getline(configFile, line)) {
         if (line.empty() || line[0] == '#') continue;
 
         size_t delimiterPos = line.find('=');

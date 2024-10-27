@@ -77,7 +77,6 @@ void TapeSorter::mergeTempTapes() {
     // TODO: check chunk size
     for (size_t i = 0; i < tempTapes.size(); ++i) {
         // int value = tempTapes[i]->getCurrentCell_impl();
-        // buffer.push_back(timeManager.run_single_task(inputTape.getCurrentCell()));
         int value = timeManager.run_single_task(tempTapes[i]->getCurrentCell());
         minHeap.push({ value, i });
     }
