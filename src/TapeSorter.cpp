@@ -4,14 +4,13 @@
 #include <iostream>
 #include <chrono>
 
-TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit)
-    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit) {
+TapeSorter::TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit, TimeManager& timeManager)
+    : inputTape(inputTape), outputTape(outputTape), memoryLimit(memoryLimit), timeManager(timeManager) {
         inputTape.rewind();
         outputTape.rewind();
     }
 
 void TapeSorter::sort() {
-    auto start = std::chrono::high_resolution_clock::now();
     size_t chunkSize = memoryLimit;
     std::vector<int> buffer;
 
@@ -19,11 +18,13 @@ void TapeSorter::sort() {
         buffer.clear();
         try {
             for (size_t i = 0; i < chunkSize && inputTape.getCurrentPosition() < inputTape.getLength() - 1; ++i) {
-                buffer.push_back(inputTape.getCurrentCell());
+                // buffer.push_back(inputTape.getCurrentCell_impl());
+                buffer.push_back(timeManager.run_single_task(inputTape.getCurrentCell()));
                 inputTape.moveToNextCell();
             }
             if (inputTape.getCurrentPosition() == inputTape.getLength() - 1){
-                buffer.push_back(inputTape.getCurrentCell());
+                // buffer.push_back(inputTape.getCurrentCell_impl());
+                buffer.push_back(timeManager.run_single_task(inputTape.getCurrentCell()));
             }
             if (buffer.empty()) break;
 
@@ -40,15 +41,9 @@ void TapeSorter::sort() {
 
     inputTape.rewind();
     outputTape.rewind();
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
-    // std::cout << "Total sort time: " << elapsed.count() << " seconds" << std::endl;
 }
 
 void TapeSorter::createTempTape(const std::vector<int>& buffer) {
-    auto start = std::chrono::high_resolution_clock::now();
-
     static int tempTapeIndex = 0;
     std::string tempTapeName = "temp_tape_" + std::to_string(tempTapeIndex++);
 
@@ -58,15 +53,13 @@ void TapeSorter::createTempTape(const std::vector<int>& buffer) {
     for (int value : buffer) {
         tempTape->changeCurrentCell(value);
         if (tempTape->getCurrentPosition() < tempTape->getLength() - 1) {
-            tempTape->moveToNextCell();
+            // tempTape->moveToNextCell();
+            timeManager.run_single_task(tempTape->moveToNextCell());
         }
     }
-    tempTape->rewind();
+    // tempTape->rewind();
+    timeManager.run_single_task(tempTape->rewind());
     tempTapes.push_back(std::move(tempTape));
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
-    // std::cout << "Time for creating temp tape: " << elapsed.count() << " seconds" << std::endl;
 }
 
 void TapeSorter::mergeTempTapes() {
@@ -83,7 +76,9 @@ void TapeSorter::mergeTempTapes() {
     std::priority_queue<TapeElement, std::vector<TapeElement>, std::greater<TapeElement>> minHeap;
     // TODO: check chunk size
     for (size_t i = 0; i < tempTapes.size(); ++i) {
-        int value = tempTapes[i]->getCurrentCell();
+        // int value = tempTapes[i]->getCurrentCell_impl();
+        // buffer.push_back(timeManager.run_single_task(inputTape.getCurrentCell()));
+        int value = timeManager.run_single_task(tempTapes[i]->getCurrentCell());
         minHeap.push({ value, i });
     }
 
@@ -91,21 +86,21 @@ void TapeSorter::mergeTempTapes() {
         TapeElement smallest = minHeap.top();
         minHeap.pop();
 
-        outputTape.changeCurrentCell(smallest.value);
+        // outputTape.changeCurrentCell(smallest.value);
+        timeManager.run_single_task(outputTape.changeCurrentCell(smallest.value));
         if (outputTape.getCurrentPosition() < outputTape.getLength() - 1) {
-            outputTape.moveToNextCell();
+            // outputTape.moveToNextCell();
+            timeManager.run_single_task(outputTape.moveToNextCell());
         }
 
         if (tempTapes[smallest.tapeIndex]->getCurrentPosition() < tempTapes[smallest.tapeIndex]->getLength() - 1) {
-            tempTapes[smallest.tapeIndex]->moveToNextCell();
-            int nextValue = tempTapes[smallest.tapeIndex]->getCurrentCell();
+            // tempTapes[smallest.tapeIndex]->moveToNextCell();
+            timeManager.run_single_task(tempTapes[smallest.tapeIndex]->moveToNextCell());
+            // int nextValue = tempTapes[smallest.tapeIndex]->getCurrentCell_impl();
+            int nextValue = timeManager.run_single_task(tempTapes[smallest.tapeIndex]->getCurrentCell());
             minHeap.push({ nextValue, smallest.tapeIndex });
         }
     }
 
     outputTape.rewind();
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
-    // std::cout << "Time for merging temp tapes: " << elapsed.count() << " seconds" << std::endl;
 }

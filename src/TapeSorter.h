@@ -3,6 +3,7 @@
 
 #include "TapeDevice.h"
 #include "TempTapeDevice.h"
+#include "utils/TimeManager.h"
 #include <vector>
 #include <string>
 #include <queue>
@@ -11,17 +12,16 @@
 
 class TapeSorter {
 public:
-    TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit);
+    TapeSorter(TapeDevice& inputTape, TapeDevice& outputTape, size_t memoryLimit, TimeManager& timeManager);
     void sort();
 private:
     TapeDevice& inputTape;
     TapeDevice& outputTape;
     size_t memoryLimit;
     std::vector<std::unique_ptr<TempTapeDevice>> tempTapes;
+    TimeManager& timeManager;
 
-    // std::string createTempFile(const std::vector<int>& buffer);
     void createTempTape(const std::vector<int>& buffer);
-    // void mergeTempFiles(const std::vector<std::string>& tempFiles);
     void mergeTempTapes();
 };
 

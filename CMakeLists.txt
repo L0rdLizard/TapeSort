@@ -24,6 +24,7 @@ add_executable(TapeSort
     src/TapeSorter.cpp
     src/Config.cpp
     src/utils/FileUtils.cpp
+    src/utils/TimeManager.cpp
 )
 
 enable_testing()

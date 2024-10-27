@@ -93,7 +93,6 @@ void TapeDevice::readConfig(const std::string& configFilename) {
 }
 
 void TapeDevice::simulateDelay(int delayMs) {
-    // std::cout << "SSSimulating delay of " << delayMs << " ms" << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
 }
 
@@ -104,10 +103,18 @@ TapeDevice::~TapeDevice() {
     FileUtils::convertBinaryToText(tapeFilename);
 }
 
-int TapeDevice::getCurrentCell() {
-    if (delays["read_delay"] > 0) {
-        simulateDelay(delays["read_delay"]);
-    }
+size_t TapeDevice::getCurrentPosition() {
+    return currentPos;
+}
+
+size_t TapeDevice::getLength() {
+    return length;
+}
+
+int TapeDevice::getCurrentCell_impl() {
+    // if (delays["read_delay"] > 0) {
+    //     simulateDelay(delays["read_delay"]);
+    // }
 
     int value;
     file.seekg(currentPos * sizeof(int), std::ios::beg);
@@ -120,18 +127,10 @@ int TapeDevice::getCurrentCell() {
     return value;
 }
 
-size_t TapeDevice::getCurrentPosition() {
-    return currentPos;
-}
-
-size_t TapeDevice::getLength() {
-    return length;
-}
-
-void TapeDevice::changeCurrentCell(int value) {
-    if (delays["write_delay"] > 0) {
-        simulateDelay(delays["write_delay"]);
-    }
+void TapeDevice::changeCurrentCell_impl(int value) {
+    // if (delays["write_delay"] > 0) {
+    //     simulateDelay(delays["write_delay"]);
+    // }
     
     file.seekp(currentPos * sizeof(int), std::ios::beg);
     file.write(reinterpret_cast<const char*>(&value), sizeof(int));
@@ -143,10 +142,10 @@ void TapeDevice::changeCurrentCell(int value) {
     file.flush();
 }
 
-void TapeDevice::moveToNextCell() {
-    if (delays["shift_delay"] > 0) {
-        simulateDelay(delays["shift_delay"]);
-    }
+void TapeDevice::moveToNextCell_impl() {
+    // if (delays["shift_delay"] > 0) {
+    //     simulateDelay(delays["shift_delay"]);
+    // }
 
     if (currentPos + 1 >= length) {
         throw std::out_of_range("End of tape reached");
@@ -154,10 +153,10 @@ void TapeDevice::moveToNextCell() {
     ++currentPos;
 }
 
-void TapeDevice::moveToPreviousCell() {
-    if (delays["shift_delay"] > 0) {
-        simulateDelay(delays["shift_delay"]);
-    }
+void TapeDevice::moveToPreviousCell_impl() {
+    // if (delays["shift_delay"] > 0) {
+    //     simulateDelay(delays["shift_delay"]);
+    // }
 
     if (currentPos == 0) {
         throw std::out_of_range("Beginning of tape reached");
@@ -165,12 +164,9 @@ void TapeDevice::moveToPreviousCell() {
     --currentPos;
 }
 
-void TapeDevice::rewind() {
-    if (currentPos == 0) {
-        return;
-    }
-    if (delays["rewind_delay"] > 0) {
-        simulateDelay(delays["rewind_delay"]);
-    }
+void TapeDevice::rewind_impl() {
+    // if (delays["rewind_delay"] > 0) {
+    //     simulateDelay(delays["rewind_delay"]);
+    // }
     currentPos = 0;
 }
