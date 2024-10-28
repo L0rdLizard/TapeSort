@@ -33,3 +33,7 @@ $ cmake --build build
 $ ./build/TapeSort <inputFilename> <outputFilename>
 ```
 
+Пример запуска:
+```
+$ ./build/TapeSort tape3 tape4
+```
