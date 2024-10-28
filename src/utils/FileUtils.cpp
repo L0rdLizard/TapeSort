@@ -17,7 +17,7 @@ size_t FileUtils::convertTextToBinary(const std::string& filename) {
     binFile.open(binFilePath, std::ios::binary | std::ios::trunc);
     
     if (!textFile.is_open() || !binFile.is_open()) {
-        throw std::runtime_error("Failed to open files");
+        throw std::runtime_error("Failed to open files \n Write filenames without extension!");
     }
     size_t count = 0;
     std::string line;
