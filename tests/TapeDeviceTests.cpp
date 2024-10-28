@@ -13,10 +13,13 @@ protected:
         length = 10;
 
         fs::remove("data/" + tapeFilename + ".bin");
+        fs::remove("data_txt/" + tapeFilename + ".txt");
+        std::ofstream file("data_txt/" + tapeFilename + ".txt");
     }
 
     void TearDown() override {
         fs::remove("data/" + tapeFilename + ".bin");
+        fs::remove("data_txt/" + tapeFilename + ".txt");
     }
 
     std::string tapeFilename;
