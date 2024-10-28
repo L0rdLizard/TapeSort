@@ -39,7 +39,22 @@ target_link_libraries(
     GTest::gtest_main
 )
 
+add_executable(TapeSorterTests
+    tests/TapeSorterTests.cpp
+    src/TapeSorter.cpp
+    src/TapeDevice.cpp
+    src/utils/FileUtils.cpp
+    src/Config.cpp
+    src/utils/TimeManager.cpp
+    src/TempTapeDevice.cpp
+)
+target_link_libraries(
+    TapeSorterTests
+    GTest::gtest_main
+)
+
 include(GoogleTest)
 gtest_discover_tests(TapeDeviceTests)
+gtest_discover_tests(TapeSorterTests)
 
 # add_executable(TapeSorterTests tests/TapeSorterTests.cpp)
