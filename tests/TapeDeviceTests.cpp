@@ -12,11 +12,11 @@ protected:
         delays = {{"read_delay", 0}, {"write_delay", 0}, {"shift_delay", 0}, {"rewind_delay", 0}};
         length = 10;
 
-        fs::remove("../data/" + tapeFilename + ".bin");
+        fs::remove("data/" + tapeFilename + ".bin");
     }
 
     void TearDown() override {
-        fs::remove("../data/" + tapeFilename + ".bin");
+        fs::remove("data/" + tapeFilename + ".bin");
     }
 
     std::string tapeFilename;
@@ -26,7 +26,7 @@ protected:
 
 TEST_F(TapeDeviceTest, ConstructorWithLength) {
     ASSERT_NO_THROW(TapeDevice device(tapeFilename, length, delays));
-    ASSERT_TRUE(fs::exists("../data/" + tapeFilename + ".bin"));
+    ASSERT_TRUE(fs::exists("data/" + tapeFilename + ".bin"));
 }
 
 TEST_F(TapeDeviceTest, GetCurrentPosition) {
@@ -104,7 +104,7 @@ TEST_F(TapeDeviceTest, DestructorConvertsToText) {
         TapeDevice device(tapeFilename, length, delays);
         device.changeCurrentCell_impl(123);
     }
-    std::string textFile = "../data_txt/" + tapeFilename + ".txt";
+    std::string textFile = "data_txt/" + tapeFilename + ".txt";
     EXPECT_TRUE(fs::exists(textFile));
 }
 

@@ -18,14 +18,14 @@ protected:
         delays = {{"read_delay", 0}, {"write_delay", 0}, {"shift_delay", 0}, {"rewind_delay", 0}};
         length = 10;
 
-        fs::remove("../data/" + tapeFilenameInput + ".bin");
-        fs::remove("../data/" + tapeFilenameOutput + ".bin");
+        fs::remove("data/" + tapeFilenameInput + ".bin");
+        fs::remove("data/" + tapeFilenameOutput + ".bin");
     }
 
     void TearDown() override {
-        fs::remove("../data/" + tapeFilenameInput + ".bin");
-        fs::remove("../data/" + tapeFilenameOutput + ".bin");
-        fs::remove("../data_txt/" + tapeFilenameOutput + ".txt");
+        fs::remove("data/" + tapeFilenameInput + ".bin");
+        fs::remove("data/" + tapeFilenameOutput + ".bin");
+        fs::remove("data_txt/" + tapeFilenameOutput + ".txt");
     }
 
     std::string tapeFilenameInput;
