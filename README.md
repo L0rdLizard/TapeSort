@@ -37,3 +37,12 @@ cmake --build build
 ```
 ./build/TapeSort tape3 tape4
 ```
+
+### 4. Tests
+```
+./build/TapeSorterTests
+```
+
+```
+./build/TapeDeviceTests
+```
