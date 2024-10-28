@@ -64,7 +64,6 @@ void TempTapeDevice::readConfig(const std::string& configFilename) {
 }
 
 void TempTapeDevice::simulateDelay(int delayMs) {
-    // std::cout << "Simulating delay of " << delayMs << " ms" << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
 }
 

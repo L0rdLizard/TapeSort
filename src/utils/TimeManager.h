@@ -17,12 +17,6 @@ public:
         virtual_times.push_back(task.delay);
     }
 
-    // template <typename T>
-    // void add_task(Task<T>&& task) {
-    //     tasks.emplace_back(std::make_unique<std::future<int>>(std::move(task.future)));
-    //     virtual_times.push_back(task.delay);
-    // }
-
     template <typename T>
     T run_single_task(Task<T>&& task) {
         if constexpr (!std::is_void_v<T>) {
@@ -54,7 +48,6 @@ public:
     const std::vector<int>& get_results() const;
 
 private:
-    // std::vector<std::unique_ptr<std::future<int>>> tasks;
     std::vector<std::future<int>> tasks;
     std::vector<int> virtual_times;
     std::vector<int> results;

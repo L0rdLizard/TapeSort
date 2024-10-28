@@ -8,7 +8,7 @@ TimeManager::TimeManager(bool useRealTime) : useRealTime(useRealTime) {}
 void TimeManager::run_tasks() {
     execution_time = 0;
     for (size_t i = 0; i < tasks.size(); ++i) {
-        tasks[i].get();  // Ждем завершения каждой задачи
+        tasks[i].get();
 
         if (useRealTime) {
             std::this_thread::sleep_for(std::chrono::seconds(virtual_times[i]));
