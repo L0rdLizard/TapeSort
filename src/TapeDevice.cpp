@@ -15,10 +15,10 @@ TapeDevice::TapeDevice(const std::string& filename, std::unordered_map<std::stri
         throw std::runtime_error("Input Txt file is empty or not exists");
     }
 
-    std::string path = "../data/" + tapeFilename + ".bin";
+    std::string path = "data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
-        file.close(); 
+        file.close();
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
         if (!file) {
             throw std::runtime_error("Failed to create tape file");
@@ -49,7 +49,7 @@ TapeDevice::TapeDevice(const std::string& filename, std::unordered_map<std::stri
 TapeDevice::TapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays)
     : currentPos(0), length(length), tapeFilename(filename), delays(delays) {
     
-    std::string path = "../data/" + tapeFilename + ".bin";
+    std::string path = "data/" + tapeFilename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         file.close();

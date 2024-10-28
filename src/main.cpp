@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         std::cerr << "Usage: " << argv[0] << " <input_file> <output_file>" << std::endl << "Write filenames without extension!" << std::endl;
         return 1;
     }
-    std::string path = "../tmp/";
+    std::string path = "tmp/";
     try {
         if (std::filesystem::create_directory(path)) {
             std::cout << "The'tmp' directory has been successfully created" << std::endl;
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     {
         TimeManager timeManager(false);
 
-        std::string configFilename = "../config/delays.cfg";
+        std::string configFilename = "delays.cfg";
         Config config(configFilename);
         std::unordered_map<std::string, int> delays = config.loadConfig();
 

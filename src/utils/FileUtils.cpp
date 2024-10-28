@@ -6,12 +6,12 @@
 #include <sstream>
 
 size_t FileUtils::convertTextToBinary(const std::string& filename) {
-    std::ifstream textFile("../data_txt/" + filename + ".txt");
+    std::ifstream textFile("data_txt/" + filename + ".txt");
     if (!textFile.is_open()) {
         return 0;
     }
 
-    std::string binFilePath = "../data/" + filename + ".bin";
+    std::string binFilePath = "data/" + filename + ".bin";
     std::ofstream binFile;
 
     binFile.open(binFilePath, std::ios::binary | std::ios::trunc);
@@ -48,8 +48,8 @@ size_t FileUtils::convertTextToBinary(const std::string& filename) {
 }
 
 void FileUtils::convertBinaryToText(const std::string& filename) {
-    std::string binaryFilePath = "../data/" + filename + ".bin";
-    std::string textFilePath = "../data_txt/" + filename + ".txt";
+    std::string binaryFilePath = "data/" + filename + ".bin";
+    std::string textFilePath = "data_txt/" + filename + ".txt";
 
     std::ifstream inFile(binaryFilePath, std::ios::binary);
     if (!inFile) {

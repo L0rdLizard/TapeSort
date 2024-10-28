@@ -9,12 +9,12 @@
 TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays)
     : length(length), currentPos(0), tempFilename(filename), delays(delays) {
     
-    std::string path = "../tmp/" + filename + ".bin";
+    std::string path = "tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
         if (!file) {
-            throw std::runtime_error("Failed to create tape file");
+            throw std::runtime_error("Failed to create temp tape file");
         }
 
         int zero = 0;
@@ -36,7 +36,7 @@ TempTapeDevice::TempTapeDevice(const std::string& filename, size_t length, std::
 TempTapeDevice::TempTapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays)
     : currentPos(0), tempFilename(filename), delays(delays) {
 
-    std::string path = "../tmp/" + filename + ".bin";
+    std::string path = "tmp/" + filename + ".bin";
     file.open(path, std::ios::in | std::ios::out | std::ios::binary);
     if (!file) {
         throw std::runtime_error("Tape file not exists. To create a new file - specify length");
@@ -71,7 +71,7 @@ TempTapeDevice::~TempTapeDevice() {
     if (file.is_open()) {
         file.close();
     }
-    std::string path = "../tmp/" + tempFilename + ".bin";
+    std::string path = "tmp/" + tempFilename + ".bin";
     std::remove(path.c_str());
 }
 

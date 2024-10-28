@@ -8,7 +8,7 @@
 Config::Config(const std::string& configFilePath) : configFilePath(configFilePath) {}
 
 std::unordered_map<std::string, int> Config::loadConfig() {
-    std::string path = "../config/" + configFilePath;
+    std::string path = "config/" + configFilePath;
     std::ifstream configFile(path);
 
     if (!configFile) {
