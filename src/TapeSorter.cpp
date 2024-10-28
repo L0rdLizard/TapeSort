@@ -54,11 +54,9 @@ void TapeSorter::createTempTape(const std::vector<int>& buffer) {
     for (int value : buffer) {
         tempTape->changeCurrentCell(value);
         if (tempTape->getCurrentPosition() < tempTape->getLength() - 1) {
-            // tempTape->moveToNextCell();
             timeManager.run_single_task(tempTape->moveToNextCell());
         }
     }
-    // tempTape->rewind();
     timeManager.run_single_task(tempTape->rewind());
     tempTapes.push_back(std::move(tempTape));
 }
@@ -75,32 +73,41 @@ void TapeSorter::mergeTempTapes() {
     };
 
     std::priority_queue<TapeElement, std::vector<TapeElement>, std::greater<TapeElement>> minHeap;
-    // TODO: check chunk size
-    for (size_t i = 0; i < tempTapes.size(); ++i) {
-        // int value = tempTapes[i]->getCurrentCell_impl();
+
+    size_t activeTapeCount = std::min(memoryLimit, tempTapes.size());
+    std::vector<size_t> activeTapes;
+
+    for (size_t i = 0; i < activeTapeCount; ++i) {
         int value = timeManager.run_single_task(tempTapes[i]->getCurrentCell());
         minHeap.push({ value, i });
+        activeTapes.push_back(i);
     }
 
     while (!minHeap.empty()) {
         TapeElement smallest = minHeap.top();
         minHeap.pop();
 
-        // outputTape.changeCurrentCell(smallest.value);
         timeManager.run_single_task(outputTape.changeCurrentCell(smallest.value));
         if (outputTape.getCurrentPosition() < outputTape.getLength() - 1) {
-            // outputTape.moveToNextCell();
             timeManager.run_single_task(outputTape.moveToNextCell());
         }
 
         if (tempTapes[smallest.tapeIndex]->getCurrentPosition() < tempTapes[smallest.tapeIndex]->getLength() - 1) {
-            // tempTapes[smallest.tapeIndex]->moveToNextCell();
             timeManager.run_single_task(tempTapes[smallest.tapeIndex]->moveToNextCell());
-            // int nextValue = tempTapes[smallest.tapeIndex]->getCurrentCell_impl();
             int nextValue = timeManager.run_single_task(tempTapes[smallest.tapeIndex]->getCurrentCell());
             minHeap.push({ nextValue, smallest.tapeIndex });
+        } else {
+            activeTapes.erase(std::remove(activeTapes.begin(), activeTapes.end(), smallest.tapeIndex), activeTapes.end());
+
+            if (activeTapes.size() < activeTapeCount && activeTapeCount < tempTapes.size()) {
+                size_t nextTapeIndex = activeTapeCount++;
+                int value = timeManager.run_single_task(tempTapes[nextTapeIndex]->getCurrentCell());
+                minHeap.push({ value, nextTapeIndex });
+                activeTapes.push_back(nextTapeIndex);
+            }
         }
     }
 
     outputTape.rewind();
 }
+

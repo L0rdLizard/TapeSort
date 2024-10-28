@@ -53,7 +53,7 @@ void testTime()
 
         TapeDevice tape2("tape4", tape1.getLength(), delays);
 
-        size_t memorySize = 2;
+        size_t memorySize = 64;
 
         TapeSorter tapeSorter(tape1, tape2, memorySize, timeManager, delays);
 
