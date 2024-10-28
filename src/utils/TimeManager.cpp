@@ -7,8 +7,11 @@ TimeManager::TimeManager(bool useRealTime) : useRealTime(useRealTime) {}
 
 void TimeManager::run_tasks() {
     execution_time = 0;
+    results.clear();
+
     for (size_t i = 0; i < tasks.size(); ++i) {
-        tasks[i].get();
+        int result = tasks[i].get();
+        results.push_back(result);
 
         if (useRealTime) {
             std::this_thread::sleep_for(std::chrono::milliseconds(virtual_times[i]));
@@ -17,6 +20,10 @@ void TimeManager::run_tasks() {
         execution_time = std::max(execution_time, virtual_times[i]);
     }
     global_execution_time += execution_time;
+}
+
+const std::vector<int>& TimeManager::get_results() const {
+    return results;
 }
 
 int TimeManager::get_execution_time() const {

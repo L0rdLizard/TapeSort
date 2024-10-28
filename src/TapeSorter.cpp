@@ -78,8 +78,15 @@ void TapeSorter::mergeTempTapes() {
     std::vector<size_t> activeTapes;
 
     for (size_t i = 0; i < activeTapeCount; ++i) {
-        int value = timeManager.run_single_task(tempTapes[i]->getCurrentCell());
-        minHeap.push({ value, i });
+        Task<int> task(tempTapes[i]->getCurrentCell());
+
+        timeManager.add_task(std::move(task));
+    }
+    timeManager.run_tasks();
+
+    const auto& results = timeManager.get_results();
+    for (size_t i = 0; i < results.size(); ++i) {
+        minHeap.push({ results[i], i });
         activeTapes.push_back(i);
     }
 
