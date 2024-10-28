@@ -28,7 +28,12 @@ add_executable(TapeSort
 )
 
 enable_testing()
-add_executable(TapeDeviceTests tests/TapeDeviceTests.cpp)
+add_executable(TapeDeviceTests
+    tests/TapeDeviceTests.cpp
+    src/TapeDevice.cpp
+    src/utils/FileUtils.cpp
+    src/Config.cpp
+)
 target_link_libraries(
     TapeDeviceTests
     GTest::gtest_main
@@ -36,4 +41,5 @@ target_link_libraries(
 
 include(GoogleTest)
 gtest_discover_tests(TapeDeviceTests)
+
 # add_executable(TapeSorterTests tests/TapeSorterTests.cpp)

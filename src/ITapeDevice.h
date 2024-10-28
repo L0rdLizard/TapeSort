@@ -20,7 +20,6 @@ public:
     virtual Task<void> moveToPreviousCell() = 0;
     virtual Task<void> rewind() = 0;
 
-private:
     virtual int getCurrentCell_impl() = 0;
     virtual void changeCurrentCell_impl(int value) = 0;
     virtual void moveToNextCell_impl() = 0;

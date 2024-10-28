@@ -17,12 +17,13 @@ private:
     std::unordered_map<std::string, int> delays;
     std::string tapeFilename;
 
+public:
     int getCurrentCell_impl();
     void changeCurrentCell_impl(int value);
     void moveToNextCell_impl();
     void moveToPreviousCell_impl();
     void rewind_impl();
-public:
+
     TapeDevice(const std::string& filename, size_t length, std::unordered_map<std::string, int> delays);
 
     TapeDevice(const std::string& filename, std::unordered_map<std::string, int> delays);
