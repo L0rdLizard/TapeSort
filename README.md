@@ -19,21 +19,21 @@
 ## Getting started
 ### 1. Configure
 ```
-$ cmake -S . -B build
+ cmake -S . -B build
 ```
 
 ### 2. Build 
 ```
-$ cmake --build build
+ cmake --build build
 ```
 
 ### 3. Run
 При запуске приложения указываются имена файлов без указания расширения - только имя! Файлы формата .txt берутся из директории data_txt/
 ```
-$ ./build/TapeSort <inputFilename> <outputFilename>
+ ./build/TapeSort <inputFilename> <outputFilename>
 ```
 
 Пример запуска:
 ```
-$ ./build/TapeSort tape3 tape4
+ ./build/TapeSort tape3 tape4
 ```
