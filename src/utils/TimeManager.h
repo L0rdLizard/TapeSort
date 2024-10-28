@@ -25,7 +25,7 @@ public:
             global_execution_time += execution_time;
 
             if (useRealTime) {
-                std::this_thread::sleep_for(std::chrono::seconds(task.delay));
+                std::this_thread::sleep_for(std::chrono::milliseconds(task.delay));
             }
 
             return result;
@@ -35,7 +35,7 @@ public:
             global_execution_time += execution_time;
 
             if (useRealTime) {
-                std::this_thread::sleep_for(std::chrono::seconds(task.delay));
+                std::this_thread::sleep_for(std::chrono::milliseconds(task.delay));
             }
         }
     }

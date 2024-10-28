@@ -11,7 +11,7 @@ void TimeManager::run_tasks() {
         tasks[i].get();
 
         if (useRealTime) {
-            std::this_thread::sleep_for(std::chrono::seconds(virtual_times[i]));
+            std::this_thread::sleep_for(std::chrono::milliseconds(virtual_times[i]));
         }
 
         execution_time = std::max(execution_time, virtual_times[i]);
