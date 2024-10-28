@@ -37,28 +37,15 @@ public:
 
     void simulateDelay(int delayMs) override;
 
-    Task<int> getCurrentCell() override {
-        return Task<int>{ std::async(std::launch::async, [this]() { return getCurrentCell_impl(); }), delays["read_delay"] };
-    }
+    Task<int> getCurrentCell() override;
 
-    Task<void> changeCurrentCell(int value) override {
-        return Task<void>{ std::async(std::launch::async, [this, value]() { changeCurrentCell_impl(value); }), delays["write_delay"] };
-    }
+    Task<void> changeCurrentCell(int value) override;
 
-    Task<void> moveToNextCell() override {
-        return Task<void>{ std::async(std::launch::async, [this]() { moveToNextCell_impl(); }), delays["shift_delay"] };
-    }
+    Task<void> moveToNextCell() override;
 
-    Task<void> moveToPreviousCell() override {
-        return Task<void>{ std::async(std::launch::async, [this]() { moveToPreviousCell_impl(); }), delays["shift_delay"] };
-    }
+    Task<void> moveToPreviousCell() override;
 
-    Task<void> rewind() override {
-        if (currentPos == 0) {
-            return Task<void>{ std::future<void>(), 0 };
-        }
-        return Task<void>{ std::async(std::launch::async, [this]() { rewind_impl(); }), delays["rewind_delay"] };
-    }
+    Task<void> rewind() override;
 };
 
 #endif // TEMP_TAPE_DEVICE_H

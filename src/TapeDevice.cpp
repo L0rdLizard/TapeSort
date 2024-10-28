@@ -169,3 +169,26 @@ void TapeDevice::rewind_impl() {
     // }
     currentPos = 0;
 }
+
+Task<int> TapeDevice::getCurrentCell() {
+    return Task<int>{ std::async(std::launch::async, [this]() { return getCurrentCell_impl(); }), delays["read_delay"] };
+}
+
+Task<void> TapeDevice::changeCurrentCell(int value) {
+    return Task<void>{ std::async(std::launch::async, [this, value]() { changeCurrentCell_impl(value); }), delays["write_delay"] };
+}
+
+Task<void> TapeDevice::moveToNextCell() {
+    return Task<void>{ std::async(std::launch::async, [this]() { moveToNextCell_impl(); }), delays["shift_delay"] };
+}
+
+Task<void> TapeDevice::moveToPreviousCell() {
+    return Task<void>{ std::async(std::launch::async, [this]() { moveToPreviousCell_impl(); }), delays["shift_delay"] };
+}
+
+Task<void> TapeDevice::rewind() {
+    if (currentPos == 0) {
+        return Task<void>{ std::future<void>(), 0 };
+    }
+    return Task<void>{ std::async(std::launch::async, [this]() { rewind_impl(); }), delays["rewind_delay"] };
+}
