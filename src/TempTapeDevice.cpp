@@ -84,9 +84,6 @@ size_t TempTapeDevice::getLength() {
 }
 
 int TempTapeDevice::getCurrentCell_impl() {
-    // if (delays["read_delay"] > 0) {
-    //     simulateDelay(delays["read_delay"]);
-    // }
     int value;
     file.seekg(currentPos * sizeof(int), std::ios::beg);
     file.read(reinterpret_cast<char*>(&value), sizeof(int));
@@ -99,10 +96,6 @@ int TempTapeDevice::getCurrentCell_impl() {
 }
 
 void TempTapeDevice::changeCurrentCell_impl(int value) {
-    // if (delays["write_delay"] > 0) {
-    //     simulateDelay(delays["write_delay"]);
-    // }
-
     file.seekp(currentPos * sizeof(int), std::ios::beg);
     file.write(reinterpret_cast<const char*>(&value), sizeof(int));
 
@@ -114,10 +107,6 @@ void TempTapeDevice::changeCurrentCell_impl(int value) {
 }
 
 void TempTapeDevice::moveToNextCell_impl() {
-    // if (delays["shift_delay"] > 0) {
-    //     simulateDelay(delays["shift_delay"]);
-    // }
-
     if (currentPos + 1 >= length) {
         throw std::out_of_range("End of tape reached");
     }
@@ -125,10 +114,6 @@ void TempTapeDevice::moveToNextCell_impl() {
 }
 
 void TempTapeDevice::moveToPreviousCell_impl() {
-    // if (delays["shift_delay"] > 0) {
-    //     simulateDelay(delays["shift_delay"]);
-    // }
-
     if (currentPos == 0) {
         throw std::out_of_range("Beginning of tape reached");
     }
@@ -136,9 +121,6 @@ void TempTapeDevice::moveToPreviousCell_impl() {
 }
 
 void TempTapeDevice::rewind_impl() {
-    // if (delays["rewind_delay"] > 0) {
-    //     simulateDelay(delays["rewind_delay"]);
-    // }
     currentPos = 0;
 }
 
