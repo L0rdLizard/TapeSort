@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
             
         }
     } catch (const std::filesystem::filesystem_error& e) {
-        
+        std::cerr << "Error: " << e.what() << std::endl;
     }
     std::string filename1 = argv[1];
     std::string filename2 = argv[2];
